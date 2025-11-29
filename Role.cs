@@ -1,22 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class Role
+    public class Role : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RoleId { get; set; }
+        public string RoleName { get; set; } = null!;
+        public string? Description { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string RoleName { get; set; }
-
-        [MaxLength(255)]
-        public string Description { get; set; }
-
-        // Navigation property for Users
-        public ICollection<User> Users { get; set; } = new List<User>();
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

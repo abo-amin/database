@@ -1,19 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class Skill
+    public class Skill : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SkillId { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string SkillName { get; set; }
-
-        // Navigation property
+        public string Name { get; set; } = null!;
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
+        // New: Navigation for job skill requirements
+        public ICollection<JobSkillRequirement> JobSkillRequirements { get; set; } = new List<JobSkillRequirement>();
     }
 }

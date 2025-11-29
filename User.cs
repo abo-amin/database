@@ -1,45 +1,56 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.Collections.Generic;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class User
+    public class User : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
+        public string Email { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
+        public string? Phone { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Email { get; set; }
+        // security
+        public bool IsPhoneVerified { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public int FailedLoginAttempts { get; set; }
+        public DateTimeOffset? LockoutEndDate { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public string? TwoFactorSecretKey { get; set; }
 
-        [Required]
-        public string PasswordHash { get; set; }
-
-        [Required]
-
-
+        // tracking & audit
+        public string UserType { get; set; } = null!; // Admin/Employer/Client/Freelancer/JobSeeker
+        public DateTimeOffset? LastLoginAt { get; set; }
+        public DateTimeOffset? LastSeenAt { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        // New: Primary Address
+        public int? PrimaryAddressId { get; set; }
+        public Address? PrimaryAddress { get; set; }
 
-        public DateTime? LastLogin { get; set; }
+        // navigations - Profiles
+        public Admin? AdminProfile { get; set; }
+        public Employer? EmployerProfile { get; set; }
+        public Client? ClientProfile { get; set; }
+        public Freelancer? FreelancerProfile { get; set; }
+        public JobSeeker? JobSeekerProfile { get; set; }
 
-        // Navigation properties
+        // navigations - Collections
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-
-        public UserProfile Profile { get; set; }
-        public ICollection<Job> PostedJobs { get; set; } = new List<Job>();
-        public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
-        public ICollection<Project> PostedProjects { get; set; } = new List<Project>();
-        public ICollection<Proposal> Proposals { get; set; } = new List<Proposal>();
-        public ICollection<EscrowTransaction> InitiatedEscrowTransactions { get; set; } = new List<EscrowTransaction>();
-        public ICollection<EscrowTransaction> ReceivedEscrowTransactions { get; set; } = new List<EscrowTransaction>();
-        public ICollection<ProjectDelivery> ProjectDeliveries { get; set; } = new List<ProjectDelivery>();
-        public ICollection<Dispute> InitiatedDisputes { get; set; } = new List<Dispute>();
-        public ICollection<Dispute> RespondedDisputes { get; set; } = new List<Dispute>();
-        public ICollection<Dispute> AdminDisputes { get; set; } = new List<Dispute>();
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
-        public ICollection<CommunityPost> CommunityPosts { get; set; } = new List<CommunityPost>();
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+        public ICollection<Job> PostedJobs { get; set; } = new List<Job>();
+        public ICollection<Project> OwnedProjects { get; set; } = new List<Project>();
+        public ICollection<Project> AssignedProjects { get; set; } = new List<Project>();
+        public ICollection<Proposal> Proposals { get; set; } = new List<Proposal>();
+        public ICollection<Message> SentMessages { get; set; } = new List<Message>();
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+        public ICollection<UserDocument> Documents { get; set; } = new List<UserDocument>();
+        public ICollection<Review> ReviewsWritten { get; set; } = new List<Review>();
+        public ICollection<Review> ReviewsReceived { get; set; } = new List<Review>();
+        public Rating? Rating { get; set; }
+        public UserSettings? Settings { get; set; }
     }
 }

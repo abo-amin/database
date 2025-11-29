@@ -1,23 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class UserSkill
+    public class UserSkill : AuditableEntity
     {
-        [Required]
+        // composite PK: UserId + SkillId
         public int UserId { get; set; }
-
-        [Required]
+        public User User { get; set; } = null!;
         public int SkillId { get; set; }
-
-        public int? ProficiencyLevel { get; set; } // 1 to 5
-
-        // Navigation properties
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
-
-        [ForeignKey(nameof(SkillId))]
-        public Skill Skill { get; set; }
+        public Skill Skill { get; set; } = null!;
+        public int? ProvenYears { get; set; }
+        public string? CertificateUrl { get; set; }
+        public int? VerifiedBy { get; set; }
+        public DateTimeOffset? VerifiedAt { get; set; }
     }
 }

@@ -1,40 +1,18 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class CommunityPost
+    public class CommunityPost : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int PostId { get; set; }
+        public int CommunityPostId { get; set; }
+        public int PostedByUserId { get; set; }
+        public User PostedByUser { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Content { get; set; } = null!;
+        public string? Tags { get; set; }
+        public int ViewCount { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
-        [Required]
-        public int UserId { get; set; }
-
-        public int? ParentPostId { get; set; } // For replies/comments
-
-        [Required]
-        [MaxLength(50)]
-        public string PostType { get; set; } // e.g., 'Question', 'Article', 'Comment'
-
-        [MaxLength(255)]
-        public string? Title { get; set; }
-
-        [Required]
-        public string Content { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation properties
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
-
-        [ForeignKey(nameof(ParentPostId))]
-        public CommunityPost? ParentPost { get; set; }
-
-        public ICollection<CommunityPost> Replies { get; set; } = new List<CommunityPost>();
+        public ICollection<CommunityReply> Replies { get; set; } = new List<CommunityReply>();
     }
 }

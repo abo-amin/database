@@ -1,42 +1,24 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.Collections.Generic;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class Project
+    public class Project : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProjectId { get; set; }
-
-        [Required]
-        public int ClientUserId { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public string Title { get; set; }
-
-        [Required]
-        public string Description { get; set; }
-
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? Budget { get; set; }
-
-        [MaxLength(50)]
-        public string? PaymentType { get; set; }
-
-        public bool IsActive { get; set; } = true;
-
-        public DateTime PostedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime? Deadline { get; set; }
-
-        // Navigation properties
-        [ForeignKey(nameof(ClientUserId))]
-        public User ClientUser { get; set; }
+        public int OwnerUserId { get; set; } // Client who posted the project
+        public User OwnerUser { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public decimal Budget { get; set; }
+        public string Status { get; set; } = "Open"; // e.g., Open, InProgress, Completed, Cancelled
+        public int? AssignedFreelancerId { get; set; }
+        public User? AssignedFreelancer { get; set; }
+        public DateTimeOffset? Deadline { get; set; }
 
         public ICollection<Proposal> Proposals { get; set; } = new List<Proposal>();
-        public ICollection<EscrowTransaction> EscrowTransactions { get; set; } = new List<EscrowTransaction>();
         public ICollection<ProjectDelivery> Deliveries { get; set; } = new List<ProjectDelivery>();
+        public ICollection<EscrowTransaction> EscrowTransactions { get; set; } = new List<EscrowTransaction>();
+        public ICollection<Dispute> Disputes { get; set; } = new List<Dispute>();
     }
 }

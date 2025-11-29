@@ -1,45 +1,18 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class EscrowTransaction
+    public class EscrowTransaction : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TransactionID { get; set; }
-
-        [Required]
-        public int ProjectID { get; set; }
-
-        [Required]
-        public int ClientUserID { get; set; }
-
-        [Required]
-        public int FreelancerUserID { get; set; }
-
-        [Required]
-        [Column(TypeName = "decimal(18, 2)")]
+        public int EscrowTransactionId { get; set; }
+        public int ProjectId { get; set; }
+        public Project Project { get; set; } = null!;
+        public int FreelancerUserId { get; set; }
+        public User Freelancer { get; set; } = null!;
         public decimal Amount { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Status { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime? ReleasedAt { get; set; }
-
-        // Navigation properties
-        [ForeignKey(nameof(ProjectID))]
-        public Project Project { get; set; }
-
-        [ForeignKey(nameof(ClientUserID))]
-        public User ClientUser { get; set; }
-
-        [ForeignKey(nameof(FreelancerUserID))]
-        public User FreelancerUser { get; set; }
-
-        public ICollection<Dispute> Disputes { get; set; } = new List<Dispute>();
+        public decimal FeeAmount { get; set; }
+        public string TransactionType { get; set; } = null!; // e.g., Deposit, Release, Refund
+        public string Status { get; set; } = "Pending"; // e.g., Pending, Complete, Failed
+        public string? TransactionReference { get; set; }
     }
 }

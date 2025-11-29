@@ -1,46 +1,33 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class Job
+    public class Job : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int JobId { get; set; }
+        public int PostedByUserId { get; set; }
+        public User PostedByUser { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string? Location { get; set; } // Can be kept for general text location if Address is too specific
+        
+        // Modified: Replaced string Type with JobCategory and JobType
+        public int JobCategoryId { get; set; }
+        public JobCategory Category { get; set; } = null!;
+        public int JobTypeId { get; set; }
+        public JobType Type { get; set; } = null!;
 
-        [Required]
-        public int CompanyUserId { get; set; }
+        public int? CompanyId { get; set; }
+        public Company? Company { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Title { get; set; }
-
-        [Required]
-        public string Description { get; set; }
-
-        [MaxLength(255)]
-        public string? Location { get; set; }
-
-        [MaxLength(50)]
-        public string? JobType { get; set; }
-
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? SalaryMin { get; set; }
-
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? SalaryMax { get; set; }
-
+        public decimal? MinSalary { get; set; }
+        public decimal? MaxSalary { get; set; }
         public bool IsActive { get; set; } = true;
-
-        public DateTime PostedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime? ExpiresAt { get; set; }
-
-        // Navigation properties
-        [ForeignKey(nameof(CompanyUserId))]
-        public User CompanyUser { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public ICollection<JobApplication> Applications { get; set; } = new List<JobApplication>();
+        // New: Navigation for job skill requirements
+        public ICollection<JobSkillRequirement> SkillRequirements { get; set; } = new List<JobSkillRequirement>();
     }
 }

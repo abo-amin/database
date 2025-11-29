@@ -1,42 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    [Index(nameof(ProjectID), nameof(FreelancerUserID), IsUnique = true)]
-    public class Proposal
+    public class Proposal : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ProposalID { get; set; }
-
-        [Required]
-        public int ProjectID { get; set; }
-
-        [Required]
-        public int FreelancerUserID { get; set; }
-
-        [Required]
-        public string ProposalText { get; set; }
-
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? BidAmount { get; set; }
-
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? HourlyRate { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Status { get; set; } = "Submitted";
-
-        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation properties
-        [ForeignKey(nameof(ProjectID))]
-        public Project Project { get; set; }
-
-        [ForeignKey(nameof(FreelancerUserID))]
-        public User FreelancerUser { get; set; }
+        public int ProposalId { get; set; }
+        public int ProjectId { get; set; }
+        public Project Project { get; set; } = null!;
+        public int FreelancerUserId { get; set; }
+        public User FreelancerUser { get; set; } = null!;
+        public decimal ProposedAmount { get; set; }
+        public string? CoverLetter { get; set; }
+        public int EstimatedDays { get; set; }
+        public string Status { get; set; } = "Pending"; // e.g., Pending, Accepted, Rejected
     }
 }

@@ -1,38 +1,16 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    [Index(nameof(JobId), nameof(JobSeekerUserId), IsUnique = true)]
-    public class JobApplication
+    public class JobApplication : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ApplicationId { get; set; }
-
-        [Required]
+        public int JobApplicationId { get; set; }
         public int JobId { get; set; }
-
-        [Required]
-        public int JobSeekerUserId { get; set; }
-
+        public Job Job { get; set; } = null!;
+        public int JobSeekerId { get; set; }
+        public JobSeeker JobSeeker { get; set; } = null!;
         public string? CoverLetter { get; set; }
-
-        [MaxLength(2048)]
-        public string? CV_URL { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Status { get; set; } = "Submitted";
-
-        public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation properties
-        [ForeignKey(nameof(JobId))]
-        public Job Job { get; set; }
-
-        [ForeignKey(nameof(JobSeekerUserId))]
-        public User JobSeekerUser { get; set; }
+        public string Status { get; set; } = "Pending"; // e.g., Pending, Reviewed, Interview, Rejected, Hired
+        public DateTimeOffset AppliedAt { get; set; } = DateTimeOffset.UtcNow;
     }
 }

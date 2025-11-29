@@ -1,21 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class UserRole
+    public class UserRole : AuditableEntity
     {
-        [Required]
+        // composite PK: UserId + RoleId
         public int UserId { get; set; }
-
-        [Required]
+        public User User { get; set; } = null!;
         public int RoleId { get; set; }
-
-        // Navigation properties
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
-
-        [ForeignKey(nameof(RoleId))]
-        public Role Role { get; set; }
+        public Role Role { get; set; } = null!;
+        public DateTimeOffset AssignedAt { get; set; } = DateTimeOffset.UtcNow;
     }
 }

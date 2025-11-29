@@ -1,36 +1,16 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
-namespace JobMagnetAPI.Models
+namespace JobMagnet.Domain.Entities
 {
-    public class ProjectDelivery
+    public class ProjectDelivery : AuditableEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int DeliveryID { get; set; }
-
-        [Required]
-        public int ProjectID { get; set; }
-
-        [Required]
-        public int FreelancerUserID { get; set; }
-
-        public string? Message { get; set; }
-
-        [MaxLength(2048)]
-        public string? AttachmentURL { get; set; }
-
-        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        [MaxLength(50)]
-        public string Status { get; set; } = "Submitted";
-
-        // Navigation properties
-        [ForeignKey(nameof(ProjectID))]
-        public Project Project { get; set; }
-
-        [ForeignKey(nameof(FreelancerUserID))]
-        public User FreelancerUser { get; set; }
+        public int ProjectDeliveryId { get; set; }
+        public int ProjectId { get; set; }
+        public Project Project { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string? Description { get; set; }
+        public string FileUrl { get; set; } = null!;
+        public DateTimeOffset DeliveredAt { get; set; } = DateTimeOffset.UtcNow;
+        public string Status { get; set; } = "PendingReview"; // e.g., PendingReview, Accepted, Rejected
     }
 }
